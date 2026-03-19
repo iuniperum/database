@@ -3,21 +3,27 @@
 
 using namespace std;
 
-class cell {
+class Cell {
     public:
     int id;
-    cell* prev;
-    cell* next;
+    Cell* prev;
+    Cell* next;
+    Category* category;
     string text;
 };
 
-class list {
+class Category: public Cell {
     public:
-    cell* head;
-    cell* tail;
+    List* data;
 };
 
-void add (list* dest, cell* new_cell) {
+class List {
+    public:
+    Cell* head;
+    Cell* tail;
+};
+
+void add (List* dest, Cell* new_cell) {
     if (dest->head == nullptr) {
         dest->head = new_cell;
         dest->tail = new_cell;
@@ -28,23 +34,31 @@ void add (list* dest, cell* new_cell) {
     dest->tail = new_cell;
 }
 
-class database {
-    cell* head;
+void find(List* dest, int number) {
+    Cell* it = dest->head;
+    while (it != nullptr) {
 
+    }
+}
+
+class database {
+    string name;
+    Cell* head;
+    //dictionary: number of column->category?
 };
 
 int main(int argc, char *argv[]) {
-    list* lista = new list;
+    List* lista = new List;
     lista->head = nullptr;
     lista->tail = nullptr;
-    for (int i = 0; i < 4; i++) {
-        cell* newcell = new cell;
+    for (int i = 0; i < 10; i++) {
+        Cell* newcell = new Cell;
         newcell->id = i;
         add(lista, newcell);
     }
 
-    cell* it = lista->head;
-    for (int i = 0; i < 4; i++) {
+    Cell* it = lista->head;
+    for (int i = 0; i < 10; i++) {
         cout << it->id << "\n";
         it = it->next;
     }
