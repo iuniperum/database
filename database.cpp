@@ -6,6 +6,12 @@ using namespace std;
 class Category;
 class List;
 
+string name;
+string cat_name;
+int option = -1;
+int cat_number;
+char if_proceed;
+
 class Cell {
     public:
     int id;
@@ -43,14 +49,22 @@ class List {
             this->tail = new_cell;
         }
     }
+
+    void fill_up(int number) {
+        for (int i = 0; i < number; i++) {
+            cin >> name;
+            Category* new_cat = new Category;
+            new_cat->init(nullptr, nullptr, nullptr, name);
+            this->add(new_cat);
+        }
+    }
 };
 
 class Database {
     public:
-    int cell_count = 0;
+    int record_count = 0;
     string name;
-    Cell* head;
-    List* categories;
+    List* categories = nullptr;
 
     void init (string n, List* c) {
         name = n;
@@ -61,39 +75,58 @@ class Database {
 Database* database = new Database;
 
 int main(int argc, char *argv[]) {
-    int option;
-    string name;
-    int cat_number;
-    string cat_name;
     Cell* iterator = new Cell;
     iterator = nullptr;
 
-    cout << "Please press:\n1 to create a database\n0 to quit\n";
-    cin >> option;
+    while (option != 0) {
+        cout << "Please press:\n1 to create a database\n2 to add a record to database\n0 to quit\n";
+        cin >> option;
+        switch (option) {
+        case 1: {
+            cout << "\nPlease enter name for your database:\n";
+            cin >> name;
 
-    switch (option) {
-    case 1: {
-        cout << "Please enter name for your database:\n";
-        cin >> name;
-        cout << "How many columns is it going to have?\n";
-        cin >> cat_number;
-        List* list = new List;
-        cout << "Please enter the names of the columns:\n";
-        for (int i = 0; i < cat_number; i++) {
-            cin >> cat_name;
-            Category* new_cat = new Category;
-            new_cat->init(nullptr, nullptr, nullptr, cat_name);
-            list->add(new_cat);
-        }
-        database->init(name, list);
+            cout << "\nHow many columns is it going to have?\n";
+            cin >> cat_number;
 
-        iterator = database->categories->head;
-        for (int i = 0; i < cat_number; i++) {
-            
+            List* list = new List;
+            cout << "\nPlease enter the names of the columns:\n";
+            list->fill_up(cat_number);
+
+            cout << "\nWAre those good categories? [y/n]\n";
+            iterator = list->head;
+            for (int i = 0; i < cat_number; i++) {
+                cout << iterator->text << "\n";
+                iterator = iterator->next;
+            }
+            cin >> if_proceed;
+            switch (if_proceed)
+            {
+            case 'y': {
+                database->init(name, list);
+                break;
+            }
+            case 'n': {
+                //RESET CATEGORIES
+                break;
+            }
+            default:
+                break;
+            }
+            break;       
         }
-        break;       
-    }
-    default:
-        break;
+        case 2: {
+            if (database->categories = nullptr) {
+                cout << "\nThere are no database yet. Please choose 1 to create it.\n";
+                break;
+            }
+            else {
+                cout << "Adding record no. " << database->record_count + 1 << "\n";
+                break;
+            }
+        }
+        default:
+            break;
+        }
     }
 }
