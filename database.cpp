@@ -50,6 +50,17 @@ class List {
         }
     }
 
+    void add_record(Database* db){
+        Cell* iterator = new Cell;
+        iterator = db->categories->head;
+        for (int i = 0; i < db->cat_number; i ++) {
+            //ID
+            Cell* id = new Cell;
+            id->init(nullptr,nullptr, nullptr, to_string(i + 1));
+            //po kolei kategorie + odnośniki do kategorii + do listy kategorii ( <-> )
+        }
+    }
+
     void fill_up(int number) {
         for (int i = 0; i < number; i++) {
             cin >> name;
@@ -65,10 +76,13 @@ class Database {
     int record_count = 0;
     string name;
     List* categories = nullptr;
+    int cat_number = 0;
+    List* records = nullptr;
 
-    void init (string n, List* c) {
+    void init (string n, List* c, int cn) {
         name = n;
         categories = c;
+        cat_number = cn;
     }
 };
 
@@ -96,14 +110,14 @@ int main(int argc, char *argv[]) {
             cout << "\nWAre those good categories? [y/n]\n";
             iterator = list->head;
             for (int i = 0; i < cat_number; i++) {
-                cout << iterator->text << "\n";
+                cout << iterator->text << " ";
                 iterator = iterator->next;
             }
             cin >> if_proceed;
             switch (if_proceed)
             {
             case 'y': {
-                database->init(name, list);
+                database->init(name, list, cat_number);
                 break;
             }
             case 'n': {
