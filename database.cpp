@@ -30,14 +30,28 @@ class Cell {
 
     Cell* data;
 
-    void init (Cell* p, Cell* n, Cell* c, string t) {
+    void init_cell (Cell* p, Cell* n, Cell* c, string t) {
         prev = p;
         next = n;
         category = c;
         text = t;
     }
 
-        void add (Cell* new_cell) {
+    void init_cat (Cell* p, Cell* n, Cell* c, string t) {
+        prev = p;
+        next = n;
+        data = new Cell;
+        data->head = nullptr;
+        data->tail = nullptr;
+        text = t;
+    }
+
+    void init_list (Cell* p, Cell* n) {
+        prev = p;
+        next = n;
+    }
+
+    void add (Cell* new_cell) {
         if (this->head == nullptr) {
             this->head = new_cell;
             this->tail = new_cell;
@@ -61,7 +75,7 @@ class Cell {
         for (int i = 0; i < number; i++) {
             cin >> name;
             Cell* new_cat = new Cell;
-            new_cat->init(nullptr, nullptr, nullptr, name);
+            new_cat->init_cat(nullptr, nullptr, nullptr, name);
             new_cat->data = new Cell;
             new_cat->if_category = true;
             this->add(new_cat);
@@ -86,38 +100,19 @@ class Database {
 
     void add_record(){
         Cell* record = new Cell;
+        record->init_list(nullptr, nullptr);
         Cell* it = this->categories->head;
         for (int i = 0; i < this->cat_number; i ++) {
             Cell* new_cell = new Cell;
             cout << "Please enter " << it->text << ": "; 
             cin >> text;
-            new_cell->init(nullptr, nullptr, it, text);
+            new_cell->init_cell(nullptr, nullptr, it, text);
             record->add(new_cell);
             it->data->add(new_cell);
             it = it->next;
         }
         record->write();
         this->records->add(record);
-        this->record_count += 1;
-    }
-
-    void add_r(int n){ 
-        Cell* record = new Cell;
-        Cell* id = new Cell;
-        id->init(nullptr,nullptr, nullptr, to_string(n));
-        record->add(id);
-        this->records->add(record);
-        Cell* iterator = this->categories->head;
-        for (int i = 0; i < this->cat_number; i ++) {
-            Cell* new_cell = new Cell;
-            cout << "Please enter " << iterator->text << ": "; 
-            cin >> text;
-            new_cell->init(nullptr, nullptr, iterator, text);
-            record->add(new_cell);
-            iterator->data->add(new_cell);
-            iterator = iterator->next;
-        }
-        record->write();
         this->record_count += 1;
     }
 
