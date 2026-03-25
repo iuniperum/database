@@ -101,14 +101,17 @@ class Database {
     void add_record(){
         Cell* record = new Cell;
         record->init_list(nullptr, nullptr);
+
         Cell* it = this->categories->head;
+
         for (int i = 0; i < this->cat_number; i ++) {
             Cell* new_cell = new Cell;
+
             cout << "Please enter " << it->text << ": "; 
             cin >> text;
             new_cell->init_cell(nullptr, nullptr, it, text);
+
             record->add(new_cell);
-            it->data->add(new_cell);
             it = it->next;
         }
         record->write();
@@ -118,11 +121,16 @@ class Database {
 
     void show() {
         this->categories->write();
-        Cell* iterator = this->records->head;
-        while (iterator != nullptr) {
+        cout << "\n-----------------------------------";
+        Cell* it = this->records->head;
+        while (it != nullptr) {
             cout << "\n";
-            iterator->write();
-            iterator = iterator->next;
+            Cell* data = it->head;
+            while (data != nullptr){
+                cout << data->text << "   ";
+                data = data->next;
+            }
+            it = it->next;
         }
     }
 };
@@ -148,7 +156,7 @@ int main(int argc, char *argv[]) {
             cout << "\nPlease enter the names of the columns:\n";
             list->fill_up(cat_number);
 
-            cout << "\nWAre those good categories? [y/n]\n";
+            cout << "\nAre those good categories? [y/n]\n";
             iterator = list->head;
             for (int i = 0; i < cat_number; i++) {
                 cout << iterator->text << " ";
