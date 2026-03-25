@@ -46,9 +46,11 @@ class Cell {
         text = t;
     }
 
-    void init_list (Cell* p, Cell* n) {
+    void init_list (Cell* p, Cell* n, Cell* h, Cell* t) {
         prev = p;
         next = n;
+        head = h;
+        tail = t;
     }
 
     void add (Cell* new_cell) {
@@ -70,37 +72,48 @@ class Cell {
             it = it->next;
         }
     }
-
-    void fill_up(int number) {
-        for (int i = 0; i < number; i++) {
-            cin >> name;
-            Cell* new_cat = new Cell;
-            new_cat->init_cat(nullptr, nullptr, nullptr, name);
-            new_cat->data = new Cell;
-            new_cat->if_category = true;
-            this->add(new_cat);
-        }
-    }
 };
 
 class Database {
     public:
     int record_count = 0;
     string name;
-    Cell* categories = nullptr;
+    Cell* categories;
     int cat_number = 0;
     Cell* records = nullptr;
 
-    void init (string n, Cell* c, int cn) {
+    void init (string n) {
         name = n;
-        categories = c;
-        cat_number = cn;
         records = new Cell;
+    }
+
+    void add_columns(){
+        this->categories = new Cell;
+        this->categories->init_list(nullptr, nullptr, nullptr, nullptr);
+
+        int number;
+        cout << "\nHow many columns would you like?\n";
+        cin >> number;
+        this->cat_number = number;
+
+        Cell* it = new Cell;
+
+        cout << "\nPlease enter the names of the columns:\n";
+        for (int i = 0; i < number; i++) {
+            string cat_name;
+            cin >> cat_name;
+
+            Cell* new_cat = new Cell;
+            new_cat->init_cat(nullptr, nullptr, nullptr, cat_name);
+            new_cat->if_category = true;
+
+            this->categories->add(new_cat);
+        }
     }
 
     void add_record(){
         Cell* record = new Cell;
-        record->init_list(nullptr, nullptr);
+        record->init_list(nullptr, nullptr, nullptr, nullptr);
 
         Cell* it = this->categories->head;
 
@@ -138,8 +151,6 @@ class Database {
 Database* database = new Database;
 
 int main(int argc, char *argv[]) {
-    Cell* iterator = new Cell;
-    iterator = nullptr;
 
     while (option != 0) {
         cout << "\nPlease press:\n1 to create a database\n2 to add a record to database\n3 to show full database\n0 to quit\n";
@@ -149,33 +160,31 @@ int main(int argc, char *argv[]) {
             cout << "\nPlease enter name for your database:\n";
             cin >> name;
 
-            cout << "\nHow many columns is it going to have?\n";
-            cin >> cat_number;
+            database->add_columns();
 
-            Cell* list = new Cell;
-            cout << "\nPlease enter the names of the columns:\n";
-            list->fill_up(cat_number);
+            cout << "\nAre those good column names? [y/n]\n";
+            database->categories->write();
+            cout << "\n";
 
-            cout << "\nAre those good categories? [y/n]\n";
-            iterator = list->head;
-            for (int i = 0; i < cat_number; i++) {
-                cout << iterator->text << " ";
-                iterator = iterator->next;
-            }
             cin >> if_proceed;
-            switch (if_proceed)
-            {
-            case 'y': {
-                database->init(name, list, cat_number);
-                break;
+
+            while (if_proceed != 'y') {
+                if (if_proceed != 'n') {
+                    cout << "\nPlease type \'y\' for yes and \'n\' for no.\n";
+                    cin >> if_proceed;
+                }
+                else {
+                    Cell* list = new Cell;
+                    database->add_columns();
+
+                    cout << "\nAre those good column names? [y/n]\n";
+                    list->write();
+                    cout << "\n";
+
+                    cin >> if_proceed;
+                }
             }
-            case 'n': {
-                //RESET CATEGORIES
-                break;
-            }
-            default:
-                break;
-            }
+            database->init(name);
             break;       
         }
         case 2: {
