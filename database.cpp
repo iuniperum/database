@@ -15,13 +15,20 @@ string text;
 
 class Cell {
     public:
-    bool if_category = false;
     int id;
+    bool if_category = false;
+    bool if_list = false;
+
     Cell* prev = nullptr;
     Cell* next = nullptr;
+
+    Cell* head = nullptr;
+    Cell* tail = nullptr;
+    
     Cell* category;
     string text;
-    List* data_if_cat = nullptr;
+
+    Cell* data;
 
     void init (Cell* p, Cell* n, Cell* c, string t) {
         prev = p;
@@ -29,16 +36,8 @@ class Cell {
         category = c;
         text = t;
     }
-};
 
-class List {
-    public:
-    Cell* head = nullptr;
-    Cell* tail = nullptr;
-    List* prev;
-    List* next;
-
-    void add (Cell* new_cell) {
+        void add (Cell* new_cell) {
         if (this->head == nullptr) {
             this->head = new_cell;
             this->tail = new_cell;
@@ -51,13 +50,10 @@ class List {
     }
 
     void write() {
-        Cell* iterator = this->head;
-        if (iterator->if_category == false) {
-            iterator = iterator->next;
-        }
-        while (iterator != nullptr) {
-            cout << iterator->text << "   ";
-            iterator = iterator->next;
+        Cell* it = this->head;
+        while (it != nullptr) {
+            cout << it->text << "   ";
+            it = it->next;
         }
     }
 
@@ -66,27 +62,9 @@ class List {
             cin >> name;
             Cell* new_cat = new Cell;
             new_cat->init(nullptr, nullptr, nullptr, name);
-            new_cat->data_if_cat = new List;
+            new_cat->data = new Cell;
             new_cat->if_category = true;
             this->add(new_cat);
-        }
-    }
-};
-
-class List_id {
-    public:
-    List* head = nullptr;
-    List* tail = nullptr;
-
-    void add (List* new_cell) {
-        if (this->head == nullptr) {
-            this->head = new_cell;
-            this->tail = new_cell;
-        } 
-        else {
-            this->tail->next = new_cell;
-            new_cell->prev = this->tail;
-            this->tail = new_cell;
         }
     }
 };
@@ -95,19 +73,36 @@ class Database {
     public:
     int record_count = 0;
     string name;
-    List* categories = nullptr;
+    Cell* categories = nullptr;
     int cat_number = 0;
-    List_id* records = nullptr;
+    Cell* records = nullptr;
 
-    void init (string n, List* c, int cn) {
+    void init (string n, Cell* c, int cn) {
         name = n;
         categories = c;
         cat_number = cn;
-        records = new List_id;
+        records = new Cell;
     }
 
-    void add_record(int n){
-        List* record = new List;
+    void add_record(){
+        Cell* record = new Cell;
+        Cell* it = this->categories->head;
+        for (int i = 0; i < this->cat_number; i ++) {
+            Cell* new_cell = new Cell;
+            cout << "Please enter " << it->text << ": "; 
+            cin >> text;
+            new_cell->init(nullptr, nullptr, it, text);
+            record->add(new_cell);
+            it->data->add(new_cell);
+            it = it->next;
+        }
+        record->write();
+        this->records->add(record);
+        this->record_count += 1;
+    }
+
+    void add_r(int n){ 
+        Cell* record = new Cell;
         Cell* id = new Cell;
         id->init(nullptr,nullptr, nullptr, to_string(n));
         record->add(id);
@@ -119,17 +114,17 @@ class Database {
             cin >> text;
             new_cell->init(nullptr, nullptr, iterator, text);
             record->add(new_cell);
-            iterator->data_if_cat->add(new_cell);
+            iterator->data->add(new_cell);
             iterator = iterator->next;
         }
+        record->write();
         this->record_count += 1;
     }
 
     void show() {
         this->categories->write();
-        List* iterator = this->records->head;
+        Cell* iterator = this->records->head;
         while (iterator != nullptr) {
-            //cout << "Record no. " << iterator->head->text << ": ";
             cout << "\n";
             iterator->write();
             iterator = iterator->next;
@@ -154,7 +149,7 @@ int main(int argc, char *argv[]) {
             cout << "\nHow many columns is it going to have?\n";
             cin >> cat_number;
 
-            List* list = new List;
+            Cell* list = new Cell;
             cout << "\nPlease enter the names of the columns:\n";
             list->fill_up(cat_number);
 
@@ -187,7 +182,7 @@ int main(int argc, char *argv[]) {
             }
             else {
                 cout << "Adding record no. " << database->record_count + 1 << "\n";
-                database->add_record(database->record_count + 1);
+                database->add_record();
                 break;
             }
         }
@@ -202,7 +197,6 @@ int main(int argc, char *argv[]) {
             }
             else {
                 database->show();
-                break;
             }
         }
         default:
