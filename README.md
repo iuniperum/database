@@ -1,5 +1,5 @@
 # Database
-Language: C++
+Language: C++ <br />
 Libraries: iostream, string
 
 ### Functions:
